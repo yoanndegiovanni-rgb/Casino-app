@@ -1,0 +1,94 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Card flip ─────────────────────────────────────────────────────────────── */
+.card-scene {
+  perspective: 600px;
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-inner.is-flipped {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 0.5rem;
+}
+
+.card-front {
+  transform: rotateY(180deg);
+}
+
+/* ── Scrollbar ─────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #0a1a0f; }
+::-webkit-scrollbar-thumb { background: #235c34; border-radius: 3px; }
+
+/* ── Body ──────────────────────────────────────────────────────────────────── */
+body {
+  margin: 0;
+  background-color: #0a1a0f;
+  color: #e8d9b0;
+  font-family: system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+}
+
+/* ── Felt texture ──────────────────────────────────────────────────────────── */
+.felt-bg {
+  background-color: #1a4a2a;
+  background-image:
+    radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.03) 0%, transparent 70%);
+}
+
+/* ── Gold text glow ────────────────────────────────────────────────────────── */
+.text-gold-glow {
+  color: #d4af37;
+  text-shadow: 0 0 12px rgba(212, 175, 55, 0.6);
+}
+
+/* ── Shared button styles ──────────────────────────────────────────────────── */
+.btn-gold {
+  background: linear-gradient(135deg, #d4af37, #f0d060);
+  color: #1a0a00;
+  font-weight: 800;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+  display: inline-block;
+  text-align: center;
+}
+.btn-gold:hover  { opacity: 0.92; }
+.btn-gold:active { transform: scale(0.97); }
+.btn-gold:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+.nav-link {
+  color: #c0b090;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: color 0.15s;
+}
+.nav-link:hover { color: #d4af37; }
+
+/* ── Chip bounce on hover ──────────────────────────────────────────────────── */
+.chip-btn:hover { transform: translateY(-3px); }
+.chip-btn { transition: transform 0.15s ease; }
+
+/* ── Roulette split / corner overlay zones ─────────────────────────────────── */
+.split-zone { transition: background 0.1s, outline 0.1s; }
+.split-zone:hover {
+  background: rgba(212, 175, 55, 0.40) !important;
+  outline: 1px solid rgba(212, 175, 55, 0.65);
+  border-radius: 3px;
+  z-index: 8 !important;
+}

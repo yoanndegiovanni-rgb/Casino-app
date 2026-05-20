@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e \"require\\('./src/app.js'\\)\")",
+      "Bash(curl -s http://localhost:3001/api/roulette/spin)",
+      "Bash(kill %1)",
+      "Bash(node *)",
+      "Bash(npx vite *)"
+    ]
+  }
+}

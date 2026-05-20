@@ -1,0 +1,9 @@
+node_modules/
+.env
+.DS_Store
+
+# backend – db is ephemeral in prod, never commit it
+backend/data/db.json
+
+# frontend build output
+frontend/dist/
