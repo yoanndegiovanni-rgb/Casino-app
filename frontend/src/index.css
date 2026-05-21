@@ -39,10 +39,42 @@
 /* ── Body ──────────────────────────────────────────────────────────────────── */
 body {
   margin: 0;
-  background-color: #0a1a0f;
   color: #e8d9b0;
   font-family: system-ui, -apple-system, sans-serif;
   min-height: 100vh;
+
+  background-color: #030c06;
+  background-image:
+    /* ① Grain cinématographique */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)' opacity='0.055'/%3E%3C/svg%3E"),
+    /* ② Tissu feutre — diagonales croisées */
+    url("data:image/svg+xml,%3Csvg width='5' height='5' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 5L5 0M-1 1L1-1M4 6L6 4' stroke='%2300cc55' stroke-opacity='0.022' stroke-width='0.9'/%3E%3C/svg%3E"),
+    /* ③ Spotlight principal — lustre central, depuis le haut */
+    radial-gradient(ellipse 55% 40% at 50% -2%, rgba(28, 110, 42, 0.80) 0%, transparent 78%),
+    /* ④ Lustre gauche — teinte ambre */
+    radial-gradient(ellipse 28% 30% at 12% 4%,  rgba(200, 148, 20, 0.09) 0%, transparent 65%),
+    /* ⑤ Lustre droit — teinte ambre */
+    radial-gradient(ellipse 28% 30% at 88% 4%,  rgba(200, 148, 20, 0.09) 0%, transparent 65%),
+    /* ⑥ Lueur dorée subtile au centre-bas (reflet table) */
+    radial-gradient(ellipse 60% 25% at 50% 100%, rgba(180, 130, 20, 0.06) 0%, transparent 60%),
+    /* ⑦ Vignette profonde sur les bords */
+    radial-gradient(ellipse 105% 105% at 50% 50%, transparent 22%, rgba(0, 0, 0, 0.88) 100%);
+
+  background-attachment: fixed;
+}
+
+/* Couche de lumière ambiante fixe (ne scroll pas) */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    /* Halo chaud depuis le haut-centre (chandelier) */
+    radial-gradient(ellipse 40% 28% at 50% 0%, rgba(255, 210, 80, 0.04) 0%, transparent 70%),
+    /* Lueur froide-verte très légère en bas */
+    radial-gradient(ellipse 70% 20% at 50% 100%, rgba(10, 60, 20, 0.35) 0%, transparent 80%);
 }
 
 /* ── Felt texture ──────────────────────────────────────────────────────────── */

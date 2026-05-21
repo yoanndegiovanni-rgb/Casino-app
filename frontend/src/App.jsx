@@ -15,7 +15,7 @@ import ProfilePage   from './pages/ProfilePage';
 function AppContent() {
   const { user } = useAuth();
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col" style={{ position: 'relative', zIndex: 1 }}>
       <Navbar />
       {user && (
         <div style={{
