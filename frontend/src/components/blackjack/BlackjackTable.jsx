@@ -108,7 +108,12 @@ export default function BlackjackTable() {
     setError('');
     setLoading(true);
     try {
-      const { game: g } = await fn();
+      let { game: g } = await fn();
+      // Auto-decline insurance so the game never blocks
+      if (g?.insuranceOffered) {
+        const res = await api.blackjack.insurance(0);
+        g = res.game;
+      }
       setGame(g);
 
       if (g.status === 'complete') {
@@ -170,26 +175,6 @@ export default function BlackjackTable() {
     await doAction(() => api.blackjack.bet(bets));
   }
 
-  async function handleInsurance(amount) {
-    setError('');
-    setLoading(true);
-    try {
-      const { game: g } = await api.blackjack.insurance(amount);
-      setGame(g);
-      if (g.status === 'complete') {
-        setShownPlayer(99); setShownDealer(99);
-        const results  = g.result?.handResults ?? [];
-        const isWin    = results.some(r => ['win','blackjack'].includes(r.outcome));
-        const isPush   = results.every(r => r.outcome === 'push');
-        if (isWin) sounds.win(); else if (isPush) sounds.push(); else sounds.lose();
-        setChipAnim(isWin ? 'win' : isPush ? null : 'lose');
-        setTimeout(() => setShowResult(true), 400);
-        updateBalance(g.balance); setBalance(g.balance);
-      }
-    } catch (e) { setError(e.message); }
-    finally { setLoading(false); }
-  }
-
   async function replayBet() {
     if (!lastBets) return;
     const totalBet = lastBets.reduce((s, b) => s + b, 0);
@@ -215,69 +200,7 @@ export default function BlackjackTable() {
 
   const totalBet = game?.hands?.reduce((s, h) => s + h.bet, 0) ?? 0;
 
-  // ── Insurance popup (rendered outside felt-bg to avoid overflow/filter trapping) ──
-  const insurancePopup = game?.insuranceOffered ? (() => {
-    const insAmt = Math.floor((game.hands?.reduce((s, h) => s + h.bet, 0) ?? 0) / 2);
-    return (
-      <div style={{
-        position: 'fixed', inset: 0, zIndex: 9999,
-        background: 'rgba(0,0,0,0.78)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-      }}>
-        <div style={{
-          background: 'linear-gradient(145deg, #0f2416, #1a3d22)',
-          border: '1px solid rgba(212,175,55,0.6)',
-          borderRadius: 16, padding: '32px 36px',
-          maxWidth: 380, width: '90%',
-          boxShadow: '0 24px 80px rgba(0,0,0,0.8)',
-          textAlign: 'center',
-        }}>
-          <div style={{ fontSize: 40, marginBottom: 8 }}>🂡</div>
-          <h3 style={{ color: '#f0d060', fontWeight: 900, fontSize: 22, letterSpacing: '0.08em', margin: '0 0 10px' }}>
-            ASSURANCE
-          </h3>
-          <p style={{ color: '#c8b890', fontSize: 14, marginBottom: 6 }}>
-            Le croupier montre un <strong style={{ color: '#f0d060' }}>A</strong>.
-          </p>
-          <p style={{ color: '#a09070', fontSize: 13, marginBottom: 24 }}>
-            Voulez-vous prendre l'assurance ?<br />
-            <strong style={{ color: '#f0d060' }}>Coût : {insAmt} jetons</strong>
-            <span style={{ color:'#888', fontSize:11 }}> (moitié de votre mise) · Rapport 2:1</span>
-          </p>
-          <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
-            <button
-              onClick={() => handleInsurance(0)}
-              disabled={loading}
-              style={{
-                background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(200,180,120,0.4)',
-                color: '#c8b890', padding: '12px 28px', borderRadius: 10,
-                fontWeight: 700, fontSize: 14, cursor: loading ? 'not-allowed' : 'pointer',
-              }}
-            >
-              Non
-            </button>
-            <button
-              onClick={() => handleInsurance(insAmt)}
-              disabled={loading}
-              style={{
-                background: 'linear-gradient(135deg, #d4af37, #f0d060)',
-                border: 'none', color: '#1a0a00',
-                padding: '12px 28px', borderRadius: 10,
-                fontWeight: 900, fontSize: 14, cursor: loading ? 'not-allowed' : 'pointer',
-                boxShadow: '0 4px 16px rgba(212,175,55,0.4)',
-              }}
-            >
-              Oui — {insAmt} jetons
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  })() : null;
-
   return (
-    <>
-    {insurancePopup}
     <div className="felt-bg min-h-[calc(100vh-64px)] flex flex-col items-center justify-start py-8 px-4 gap-6"
       style={{ position: 'relative', overflow: 'hidden' }}>
 
@@ -467,7 +390,6 @@ export default function BlackjackTable() {
         <span className="text-gold text-sm font-bold">💰 {balance?.toLocaleString()} chips</span>
       </div>
     </div>
-    </>
   );
 }
 
