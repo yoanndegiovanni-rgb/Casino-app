@@ -23,18 +23,22 @@ function saveResult(userId, game) {
     description: `Blackjack: ${outcomes}`, balance_after: game.balance,
   });
 
-  const wins           = game.result.handResults.filter(r => ['win','blackjack'].includes(r.outcome)).length;
-  const losses         = game.result.handResults.filter(r => ['lose','bust'].includes(r.outcome)).length;
-  const pushes         = game.result.handResults.filter(r => r.outcome === 'push').length;
+  const wins            = game.result.handResults.filter(r => ['win','blackjack'].includes(r.outcome)).length;
+  const losses          = game.result.handResults.filter(r => ['lose','bust'].includes(r.outcome)).length;
+  const pushes          = game.result.handResults.filter(r => r.outcome === 'push').length;
   const blackjacksCount = game.result.handResults.filter(r => r.outcome === 'blackjack').length;
+  const fiveCard21Count = game.hands.filter(h =>
+    h.cards.length >= 5 && bj.handValue(h.cards) === 21 && h.status === 'stand'
+  ).length;
 
   db.game_stats.increment(userId, {
-    blackjack_wins:   wins,
-    blackjack_losses: losses,
-    blackjack_pushes: pushes,
-    blackjacks_count: blackjacksCount,
-    total_wagered:    totalBet,
-    total_won:        payout,
+    blackjack_wins:     wins,
+    blackjack_losses:   losses,
+    blackjack_pushes:   pushes,
+    blackjacks_count:   blackjacksCount,
+    five_card_21_count: fiveCard21Count,
+    total_wagered:      totalBet,
+    total_won:          payout,
   });
 
   updateDailyStreak(userId, db);
@@ -83,7 +87,20 @@ function actionRoute(action) {
 router.post('/hit',       authenticate, actionRoute('hit'));
 router.post('/stand',     authenticate, actionRoute('stand'));
 router.post('/double',    authenticate, actionRoute('doubleDown'));
-router.post('/split',     authenticate, actionRoute('split'));
+router.post('/split', authenticate, (req, res) => {
+  try {
+    const before = bj.getGame(req.userId);
+    const countBefore = before ? before.hands.length : 0;
+    const game = bj.split(req.userId);
+    if (game.hands.length > countBefore) {
+      db.game_stats.increment(req.userId, { splits_count: 1 });
+    }
+    if (game.status === 'complete') { saveResult(req.userId, game); bj.endGame(req.userId); }
+    res.json({ game });
+  } catch (e) {
+    res.status(400).json({ error: e.message });
+  }
+});
 router.post('/surrender', authenticate, actionRoute('surrender'));
 
 router.post('/new-game', authenticate, (req, res) => {

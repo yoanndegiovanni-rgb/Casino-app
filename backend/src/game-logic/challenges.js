@@ -32,6 +32,22 @@ const CHALLENGE_TRACKS = [
     ],
   },
   {
+    id: 'splits', title: 'Séparateur', icon: '✂️', stat: 'splits_count',
+    stages: [
+      { id: 'splits_10',  title: 'Première séparation', desc: 'Effectuer 10 splits',  target: 10,  reward: 400,  tier: 'easy'   },
+      { id: 'splits_50',  title: 'Stratège',             desc: 'Effectuer 50 splits',  target: 50,  reward: 1500, tier: 'medium' },
+      { id: 'splits_200', title: 'Maître du split',      desc: 'Effectuer 200 splits', target: 200, reward: 6000, tier: 'hard'   },
+    ],
+  },
+  {
+    id: 'five_card_21', title: 'Cinq Cartes', icon: '🖐️', stat: 'five_card_21_count',
+    stages: [
+      { id: 'fivecard_5',  title: 'Coup de chance',  desc: 'Faire 21 avec 5 cartes 5 fois',  target: 5,  reward: 800,  tier: 'easy'   },
+      { id: 'fivecard_10', title: 'Artiste du jeu',   desc: 'Faire 21 avec 5 cartes 10 fois', target: 10, reward: 2500, tier: 'medium' },
+      { id: 'fivecard_30', title: 'Charlie Charlie',  desc: 'Faire 21 avec 5 cartes 30 fois', target: 30, reward: 8000, tier: 'hard'   },
+    ],
+  },
+  {
     id: 'streak', title: 'Série Quotidienne', icon: '📅', stat: 'daily_streak',
     stages: [
       { id: 'streak_3',  title: 'Régulier',       desc: 'Jouer 3 jours de suite',  target: 3,  reward: 750,  tier: 'easy'   },
@@ -64,11 +80,13 @@ function updateDailyStreak(userId, db) {
 
 function getProgress(user, stats) {
   return {
-    total_wagered:    stats.total_wagered    || 0,
-    blackjack_wins:   stats.blackjack_wins   || 0,
-    blackjacks_count: stats.blackjacks_count || 0,
-    wheel_spins:      stats.wheel_spins      || 0,
-    daily_streak:     user.daily_streak      || 0,
+    total_wagered:      stats.total_wagered      || 0,
+    blackjack_wins:     stats.blackjack_wins     || 0,
+    blackjacks_count:   stats.blackjacks_count   || 0,
+    wheel_spins:        stats.wheel_spins        || 0,
+    splits_count:       stats.splits_count       || 0,
+    five_card_21_count: stats.five_card_21_count || 0,
+    daily_streak:       user.daily_streak        || 0,
   };
 }
 
