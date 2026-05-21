@@ -289,7 +289,7 @@ export default function BlackjackTable() {
                 ASSURANCE
               </h3>
               <p style={{ color: '#c8b890', fontSize: 14, marginBottom: 6 }}>
-                Le croupier montre un <strong style={{ color: '#f0d060' }}>As</strong>.
+                Le croupier montre un <strong style={{ color: '#f0d060' }}>A</strong>.
               </p>
               <p style={{ color: '#a09070', fontSize: 13, marginBottom: 24 }}>
                 Voulez-vous prendre l'assurance ?<br />
