@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { api } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
+import { CasinoChipSVG, CHIP_DENOMS } from '../common/ChipStack';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -14,16 +15,7 @@ const BOARD_ROWS = [
   [1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34],
 ];
 
-const CHIP_DEFS = [
-  { value: 1,   bg: '#78716c', ring: '#d6d3d1' },
-  { value: 2,   bg: '#0369a1', ring: '#7dd3fc' },
-  { value: 5,   bg: '#1d4ed8', ring: '#93c5fd' },
-  { value: 10,  bg: '#b91c1c', ring: '#fca5a5' },
-  { value: 25,  bg: '#15803d', ring: '#86efac' },
-  { value: 50,  bg: '#b45309', ring: '#fcd34d' },
-  { value: 100, bg: '#6d28d9', ring: '#c4b5fd' },
-  { value: 500, bg: '#9d174d', ring: '#f9a8d4' },
-];
+const ROULETTE_CHIP_VALUES = [1, 2, 5, 10, 25, 50, 100, 500];
 
 // ─── Board geometry & split/corner zones ─────────────────────────────────────
 
@@ -534,43 +526,49 @@ function BettingBoard({ bets, onBet, spinning, result }) {
 // ─── Chip selector ────────────────────────────────────────────────────────────
 
 function ChipSelector({ selected, onSelect }) {
-  const col1 = CHIP_DEFS.filter(c => c.value <= 10);
-  const col2 = CHIP_DEFS.filter(c => c.value >= 25);
+  const col1 = ROULETTE_CHIP_VALUES.filter(v => v <= 10);
+  const col2 = ROULETTE_CHIP_VALUES.filter(v => v >= 25);
 
-  function ChipBtn({ value, bg, ring }) {
+  function chipDenom(value) {
+    return CHIP_DENOMS.find(d => d.value === value) || CHIP_DENOMS[CHIP_DENOMS.length - 1];
+  }
+
+  function ChipBtn({ value }) {
+    const denom = chipDenom(value);
+    const isSelected = selected === value;
     return (
       <button
         onClick={() => onSelect(value)}
         style={{
-          width: 38, height: 38, borderRadius: '50%',
-          background: bg,
-          border: `2px solid ${selected === value ? ring : 'rgba(255,255,255,0.2)'}`,
-          outline: selected === value ? `2px solid ${ring}` : 'none',
-          outlineOffset: 2,
-          color: '#fff', fontWeight: 900,
-          fontSize: value >= 100 ? 8 : 10,
+          background: 'none', border: 'none', padding: 0,
           cursor: 'pointer',
-          transition: 'transform 0.1s, outline 0.1s',
-          transform: selected === value ? 'scale(1.15)' : 'scale(1)',
-          boxShadow: selected === value ? `0 0 12px ${ring}66` : '0 2px 6px rgba(0,0,0,0.5)',
-          position: 'relative', flexShrink: 0,
+          transition: 'transform 0.1s',
+          transform: isSelected ? 'scale(1.2)' : 'scale(1)',
+          filter: isSelected
+            ? `drop-shadow(0 0 8px ${denom.color}aa)`
+            : 'drop-shadow(0 2px 4px rgba(0,0,0,0.6))',
+          outline: 'none',
+          flexShrink: 0,
         }}
       >
-        {value}
-        <span style={{ position:'absolute', inset:3, borderRadius:'50%', border:'1px solid rgba(255,255,255,0.15)', pointerEvents:'none' }} />
+        <CasinoChipSVG
+          label={denom.label}
+          color={denom.color}
+          text={denom.text}
+          size={46}
+          shadow={false}
+        />
       </button>
     );
   }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'row', gap: 5, alignItems: 'center' }}>
-      {/* Colonne 1 : 1, 2, 5, 10 */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 5, alignItems: 'center' }}>
-        {col1.map(c => <ChipBtn key={c.value} {...c} />)}
+        {col1.map(v => <ChipBtn key={v} value={v} />)}
       </div>
-      {/* Colonne 2 : 25, 50, 100, 500 */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 5, alignItems: 'center' }}>
-        {col2.map(c => <ChipBtn key={c.value} {...c} />)}
+        {col2.map(v => <ChipBtn key={v} value={v} />)}
       </div>
     </div>
   );

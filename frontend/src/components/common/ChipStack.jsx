@@ -10,6 +10,7 @@ export const CHIP_DENOMS = [
   { value: 25,   label: '25',  color: '#7b1c2a', text: '#fff' },
   { value: 10,   label: '10',  color: '#1565c0', text: '#fff' },
   { value: 5,    label: '5',   color: '#c2185b', text: '#fff' },
+  { value: 2,    label: '2',   color: '#00838f', text: '#fff' },
   { value: 1,    label: '1',   color: '#2e7d32', text: '#fff' },
 ];
 
