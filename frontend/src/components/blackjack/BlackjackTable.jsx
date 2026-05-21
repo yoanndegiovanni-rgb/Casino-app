@@ -62,9 +62,6 @@ export default function BlackjackTable() {
   const [chipAnim, setChipAnim]     = useState(null); // 'win' | 'lose' | null
   const [showResult, setShowResult] = useState(false);
 
-  // Insurance
-  const [insuranceAmt, setInsuranceAmt] = useState(0);
-
   // Last bets (to replay with "Same Bet")
   const [lastBets, setLastBets] = useState(null);
 
@@ -269,98 +266,66 @@ export default function BlackjackTable() {
         ))}
       </div>
       {/* ── Insurance popup ── */}
-      {game?.insuranceOffered && (
-        <div style={{
-          position: 'fixed', inset: 0, zIndex: 100,
-          background: 'rgba(0,0,0,0.75)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          backdropFilter: 'blur(4px)',
-        }}>
+      {game?.insuranceOffered && (() => {
+        const totalBet = game.hands?.reduce((s, h) => s + h.bet, 0) ?? 0;
+        const insAmt   = Math.floor(totalBet / 2);
+        return (
           <div style={{
-            background: 'linear-gradient(145deg, #0f2416, #1a3d22)',
-            border: '1px solid rgba(212,175,55,0.6)',
-            borderRadius: 16,
-            padding: '32px 36px',
-            maxWidth: 400, width: '90%',
-            boxShadow: '0 24px 80px rgba(0,0,0,0.8)',
-            textAlign: 'center',
+            position: 'fixed', inset: 0, zIndex: 100,
+            background: 'rgba(0,0,0,0.78)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            backdropFilter: 'blur(4px)',
           }}>
-            <div style={{ fontSize: 42, marginBottom: 8 }}>🂡</div>
-            <h3 style={{ color: '#f0d060', fontWeight: 900, fontSize: 22, letterSpacing: '0.08em', margin: '0 0 8px' }}>
-              ASSURANCE
-            </h3>
-            <p style={{ color: '#c8b890', fontSize: 14, marginBottom: 4 }}>
-              Le croupier montre un <strong style={{ color: '#f0d060' }}>As</strong>.
-            </p>
-            <p style={{ color: '#a09070', fontSize: 12, marginBottom: 20 }}>
-              Mise max : <strong style={{ color: '#f0d060' }}>
-                {Math.floor((game.hands?.reduce((s,h) => s+h.bet, 0) ?? 0) / 2)} jetons
-              </strong> · Rapport 2:1
-            </p>
-
-            {/* Chip buttons */}
-            {(() => {
-              const maxIns = Math.floor((game.hands?.reduce((s,h) => s+h.bet,0) ?? 0) / 2);
-              const chips = [5,10,25,50,100,250].filter(v => v <= maxIns);
-              return (
-                <div style={{ display:'flex', gap:8, flexWrap:'wrap', justifyContent:'center', marginBottom:16 }}>
-                  {chips.map(v => (
-                    <button key={v} onClick={() => setInsuranceAmt(a => Math.min(a+v, maxIns))}
-                      style={{
-                        width:44, height:44, borderRadius:'50%',
-                        background: v<=10 ? '#1d4ed8' : v<=50 ? '#b91c1c' : '#15803d',
-                        border: '2px solid rgba(255,255,255,0.25)',
-                        color:'#fff', fontWeight:900, fontSize:11, cursor:'pointer',
-                      }}>+{v}</button>
-                  ))}
-                </div>
-              );
-            })()}
-
-            {/* Amount display */}
-            <div style={{ marginBottom: 20 }}>
-              <span style={{ fontSize: 32, fontWeight: 900, color: insuranceAmt > 0 ? '#f0d060' : '#555' }}>
-                {insuranceAmt}
-              </span>
-              <span style={{ color: '#a09070', fontSize: 13, marginLeft: 6 }}>jetons</span>
-              {insuranceAmt > 0 && (
-                <button onClick={() => setInsuranceAmt(0)}
-                  style={{ marginLeft:12, color:'#f87171', fontSize:11, background:'none', border:'none', cursor:'pointer' }}>
-                  Réinitialiser
+            <div style={{
+              background: 'linear-gradient(145deg, #0f2416, #1a3d22)',
+              border: '1px solid rgba(212,175,55,0.6)',
+              borderRadius: 16, padding: '32px 36px',
+              maxWidth: 380, width: '90%',
+              boxShadow: '0 24px 80px rgba(0,0,0,0.8)',
+              textAlign: 'center',
+            }}>
+              <div style={{ fontSize: 40, marginBottom: 8 }}>🂡</div>
+              <h3 style={{ color: '#f0d060', fontWeight: 900, fontSize: 22, letterSpacing: '0.08em', margin: '0 0 10px' }}>
+                ASSURANCE
+              </h3>
+              <p style={{ color: '#c8b890', fontSize: 14, marginBottom: 6 }}>
+                Le croupier montre un <strong style={{ color: '#f0d060' }}>As</strong>.
+              </p>
+              <p style={{ color: '#a09070', fontSize: 13, marginBottom: 24 }}>
+                Voulez-vous prendre l'assurance ?<br />
+                <strong style={{ color: '#f0d060' }}>Coût : {insAmt} jetons</strong>
+                <span style={{ color:'#888', fontSize:11 }}> (moitié de votre mise) · Rapport 2:1</span>
+              </p>
+              <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
+                <button
+                  onClick={() => handleInsurance(0)}
+                  disabled={loading}
+                  style={{
+                    background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(200,180,120,0.4)',
+                    color: '#c8b890', padding: '12px 28px', borderRadius: 10,
+                    fontWeight: 700, fontSize: 14, cursor: 'pointer', transition: 'opacity 0.15s',
+                  }}
+                >
+                  Non
                 </button>
-              )}
-            </div>
-
-            {/* Buttons */}
-            <div style={{ display:'flex', gap:12, justifyContent:'center' }}>
-              <button
-                onClick={() => handleInsurance(0)}
-                disabled={loading}
-                style={{
-                  background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(200,180,120,0.4)',
-                  color: '#c8b890', padding: '10px 22px', borderRadius: 10,
-                  fontWeight: 700, fontSize: 13, cursor: 'pointer',
-                }}
-              >
-                Décliner
-              </button>
-              <button
-                onClick={() => handleInsurance(insuranceAmt || Math.floor((game.hands?.reduce((s,h)=>s+h.bet,0)??0)/2))}
-                disabled={loading || insuranceAmt === 0}
-                style={{
-                  background: insuranceAmt > 0 ? 'linear-gradient(135deg,#d4af37,#f0d060)' : 'rgba(212,175,55,0.2)',
-                  border: 'none', color: insuranceAmt > 0 ? '#1a0a00' : '#888',
-                  padding: '10px 22px', borderRadius: 10,
-                  fontWeight: 900, fontSize: 13,
-                  cursor: insuranceAmt > 0 ? 'pointer' : 'not-allowed',
-                }}
-              >
-                Prendre l'assurance ({insuranceAmt})
-              </button>
+                <button
+                  onClick={() => handleInsurance(insAmt)}
+                  disabled={loading}
+                  style={{
+                    background: 'linear-gradient(135deg, #d4af37, #f0d060)',
+                    border: 'none', color: '#1a0a00',
+                    padding: '12px 28px', borderRadius: 10,
+                    fontWeight: 900, fontSize: 14, cursor: 'pointer',
+                    boxShadow: '0 4px 16px rgba(212,175,55,0.4)',
+                  }}
+                >
+                  Oui — {insAmt} jetons
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* Header */}
       <div className="text-center" style={{ position:'relative', zIndex:1 }}>
