@@ -90,7 +90,7 @@ export default function Home() {
             ♠ ROYAL CASINO ♦
           </h1>
           <p className="text-gray-400 text-xl max-w-md mx-auto">
-            Play Blackjack and Texas Hold'em Poker. No downloads, no deposits — just chips.
+            Jouez au Blackjack, au Texas Hold'em et à la Roulette. Aucun téléchargement, aucun dépôt — que des jetons.
           </p>
         </div>
 
