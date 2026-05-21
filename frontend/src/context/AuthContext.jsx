@@ -24,6 +24,17 @@ export function AuthProvider({ children }) {
     else setLoading(false);
   }, [fetchMe]);
 
+  // Re-sync balance when the tab regains focus
+  useEffect(() => {
+    function onVisible() {
+      if (document.visibilityState === 'visible' && localStorage.getItem('casino_token')) {
+        fetchMe();
+      }
+    }
+    document.addEventListener('visibilitychange', onVisible);
+    return () => document.removeEventListener('visibilitychange', onVisible);
+  }, [fetchMe]);
+
   async function login(username, password) {
     const { token, user: u } = await api.auth.login(username, password);
     localStorage.setItem('casino_token', token);

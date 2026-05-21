@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../services/api';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CasinoChipSVG, CHIP_DENOMS } from '../components/common/ChipStack';
 
 // ─── Chip rain ────────────────────────────────────────────────────────────────
@@ -58,9 +58,12 @@ function ChipRain() {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function Home() {
-  const { user, updateBalance } = useAuth();
+  const { user, updateBalance, fetchMe } = useAuth();
   const [bonusMsg, setBonusMsg] = useState('');
   const [bonusErr, setBonusErr] = useState('');
+
+  // Refresh balance from server each time the user comes back to home
+  useEffect(() => { fetchMe(); }, []); // eslint-disable-line
 
   async function claimBonus() {
     setBonusMsg(''); setBonusErr('');
