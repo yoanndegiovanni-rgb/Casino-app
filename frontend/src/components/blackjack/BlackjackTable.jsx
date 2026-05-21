@@ -203,44 +203,44 @@ export default function BlackjackTable() {
       <div aria-hidden="true" style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0 }}>
 
         {/* Symboles de couleurs — gauche */}
-        <span style={{ position:'absolute', left:'-2%',  top:'8%',  fontSize:220, opacity:0.032, color:'#fff', lineHeight:1, userSelect:'none', transform:'rotate(-12deg)' }}>♠</span>
-        <span style={{ position:'absolute', left:'3%',   top:'52%', fontSize:160, opacity:0.028, color:'#d4af37', lineHeight:1, userSelect:'none', transform:'rotate(8deg)' }}>♣</span>
-        <span style={{ position:'absolute', left:'-1%',  top:'78%', fontSize:100, opacity:0.022, color:'#fff', lineHeight:1, userSelect:'none', transform:'rotate(-5deg)' }}>♠</span>
+        <span style={{ position:'absolute', left:'-2%',  top:'8%',  fontSize:220, opacity:0.09, color:'#fff', lineHeight:1, userSelect:'none', transform:'rotate(-12deg)' }}>♠</span>
+        <span style={{ position:'absolute', left:'3%',   top:'52%', fontSize:160, opacity:0.07, color:'#d4af37', lineHeight:1, userSelect:'none', transform:'rotate(8deg)' }}>♣</span>
+        <span style={{ position:'absolute', left:'-1%',  top:'78%', fontSize:100, opacity:0.06, color:'#fff', lineHeight:1, userSelect:'none', transform:'rotate(-5deg)' }}>♠</span>
 
         {/* Symboles de couleurs — droite */}
-        <span style={{ position:'absolute', right:'-2%', top:'6%',  fontSize:200, opacity:0.032, color:'#c0392b', lineHeight:1, userSelect:'none', transform:'rotate(10deg)' }}>♥</span>
-        <span style={{ position:'absolute', right:'2%',  top:'48%', fontSize:170, opacity:0.028, color:'#c0392b', lineHeight:1, userSelect:'none', transform:'rotate(-8deg)' }}>♦</span>
-        <span style={{ position:'absolute', right:'-1%', top:'76%', fontSize:110, opacity:0.022, color:'#d4af37', lineHeight:1, userSelect:'none', transform:'rotate(6deg)' }}>♣</span>
+        <span style={{ position:'absolute', right:'-2%', top:'6%',  fontSize:200, opacity:0.09, color:'#c0392b', lineHeight:1, userSelect:'none', transform:'rotate(10deg)' }}>♥</span>
+        <span style={{ position:'absolute', right:'2%',  top:'48%', fontSize:170, opacity:0.07, color:'#c0392b', lineHeight:1, userSelect:'none', transform:'rotate(-8deg)' }}>♦</span>
+        <span style={{ position:'absolute', right:'-1%', top:'76%', fontSize:110, opacity:0.06, color:'#d4af37', lineHeight:1, userSelect:'none', transform:'rotate(6deg)' }}>♣</span>
 
         {/* Lignes ornementales dorées — gauche */}
-        <svg style={{ position:'absolute', left:0, top:0, width:'18%', height:'100%', opacity:0.06 }} viewBox="0 0 120 800" preserveAspectRatio="none">
-          <line x1="110" y1="0" x2="110" y2="800" stroke="#d4af37" strokeWidth="0.5"/>
-          <line x1="105" y1="0" x2="105" y2="800" stroke="#d4af37" strokeWidth="0.2"/>
+        <svg style={{ position:'absolute', left:0, top:0, width:'18%', height:'100%', opacity:0.18 }} viewBox="0 0 120 800" preserveAspectRatio="none">
+          <line x1="110" y1="0" x2="110" y2="800" stroke="#d4af37" strokeWidth="0.8"/>
+          <line x1="105" y1="0" x2="105" y2="800" stroke="#d4af37" strokeWidth="0.3"/>
           {[80,200,320,440,560,680].map(y => (
             <g key={y}>
-              <circle cx="110" cy={y} r="4" fill="none" stroke="#d4af37" strokeWidth="0.5"/>
-              <line x1="90" y1={y} x2="125" y2={y} stroke="#d4af37" strokeWidth="0.3"/>
+              <circle cx="110" cy={y} r="5" fill="none" stroke="#d4af37" strokeWidth="0.8"/>
+              <line x1="85" y1={y} x2="128" y2={y} stroke="#d4af37" strokeWidth="0.4"/>
             </g>
           ))}
         </svg>
 
         {/* Lignes ornementales dorées — droite */}
-        <svg style={{ position:'absolute', right:0, top:0, width:'18%', height:'100%', opacity:0.06 }} viewBox="0 0 120 800" preserveAspectRatio="none">
-          <line x1="10" y1="0" x2="10" y2="800" stroke="#d4af37" strokeWidth="0.5"/>
-          <line x1="15" y1="0" x2="15" y2="800" stroke="#d4af37" strokeWidth="0.2"/>
+        <svg style={{ position:'absolute', right:0, top:0, width:'18%', height:'100%', opacity:0.18 }} viewBox="0 0 120 800" preserveAspectRatio="none">
+          <line x1="10" y1="0" x2="10" y2="800" stroke="#d4af37" strokeWidth="0.8"/>
+          <line x1="15" y1="0" x2="15" y2="800" stroke="#d4af37" strokeWidth="0.3"/>
           {[80,200,320,440,560,680].map(y => (
             <g key={y}>
-              <circle cx="10" cy={y} r="4" fill="none" stroke="#d4af37" strokeWidth="0.5"/>
-              <line x1="-5" y1={y} x2="30" y2={y} stroke="#d4af37" strokeWidth="0.3"/>
+              <circle cx="10" cy={y} r="5" fill="none" stroke="#d4af37" strokeWidth="0.8"/>
+              <line x1="-8" y1={y} x2="35" y2={y} stroke="#d4af37" strokeWidth="0.4"/>
             </g>
           ))}
         </svg>
 
         {/* Losanges dorés dans les coins */}
         {[['-14px','-14px'],['auto','-14px'],['-14px','auto'],['auto','auto']].map(([t,b,l,r],i) => (
-          <svg key={i} style={{ position:'absolute', top: i<2?'-14px':'auto', bottom:i>=2?'-14px':'auto', left:i%2===0?'-14px':'auto', right:i%2===1?'-14px':'auto', width:80, height:80, opacity:0.07 }} viewBox="0 0 80 80">
-            <rect x="15" y="15" width="50" height="50" fill="none" stroke="#d4af37" strokeWidth="1" transform="rotate(45 40 40)"/>
-            <rect x="22" y="22" width="36" height="36" fill="none" stroke="#d4af37" strokeWidth="0.5" transform="rotate(45 40 40)"/>
+          <svg key={i} style={{ position:'absolute', top: i<2?'-14px':'auto', bottom:i>=2?'-14px':'auto', left:i%2===0?'-14px':'auto', right:i%2===1?'-14px':'auto', width:90, height:90, opacity:0.18 }} viewBox="0 0 80 80">
+            <rect x="15" y="15" width="50" height="50" fill="none" stroke="#d4af37" strokeWidth="1.2" transform="rotate(45 40 40)"/>
+            <rect x="22" y="22" width="36" height="36" fill="none" stroke="#d4af37" strokeWidth="0.6" transform="rotate(45 40 40)"/>
           </svg>
         ))}
       </div>
