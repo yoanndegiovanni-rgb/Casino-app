@@ -69,8 +69,8 @@ function placeBet(userId, bets, balance) {
     throw new Error('Place at least one bet');
 
   for (const b of activeBets) {
-    if (!Number.isFinite(b) || b < 10 || b > 500)
-      throw new Error('Each bet must be between 10 and 500 chips');
+    if (!Number.isFinite(b) || b < 10 || b > 5000)
+      throw new Error('Each bet must be between 10 and 5000 chips');
   }
 
   const totalBet = activeBets.reduce((s, b) => s + b, 0);

@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { ChipButton } from '../common/ChipStack';
 import { sounds } from '../../utils/sounds';
 
-const CHIP_VALUES = [10, 25, 50, 100, 500];
+const CHIP_VALUES = [10, 25, 100, 500, 1000];
 const MIN_BET = 10;
-const MAX_BET = 500;
+const MAX_BET = 5000;
 
 function SpotBet({ index, bet, active, onToggle, onChange, balance, disabled }) {
   function addChip(val) {
