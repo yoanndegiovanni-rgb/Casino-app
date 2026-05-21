@@ -537,7 +537,7 @@ function ChipSelector({ selected, onSelect }) {
   return (
     <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
       <span style={{ color: 'rgba(200,180,120,0.7)', fontSize: 11, letterSpacing: '0.08em', textTransform: 'uppercase', marginRight: 4 }}>
-        Mise
+        Valeur du jeton
       </span>
       {CHIP_DEFS.map(({ value, bg, ring }) => (
         <button
@@ -663,7 +663,7 @@ export default function RouletteTable() {
   const totalBet = bets.reduce((s, b) => s + b.amount, 0);
 
   return (
-    <div style={{
+    <div lang="fr" style={{
       minHeight: 'calc(100vh - 64px)',
       background: 'radial-gradient(ellipse at 50% 25%, #0d3d18 0%, #04100a 80%)',
       display: 'flex',
@@ -712,10 +712,10 @@ export default function RouletteTable() {
             }}>
               {/* Net result */}
               <div style={{ fontWeight: 900, fontSize: 24 }}>
-                {result.net >= 0 ? '+' : ''}{result.net} chips
+                {result.net >= 0 ? '+' : ''}{result.net} jetons
               </div>
 
-              {/* Chips recovered — always shown when non-zero */}
+              {/* Payout detail */}
               {result.totalPayout > 0 && (
                 <div style={{
                   marginTop: 5,
@@ -725,17 +725,17 @@ export default function RouletteTable() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  gap: 6,
+                  gap: 8,
                 }}>
-                  <span style={{ opacity: 0.7, fontWeight: 400, fontSize: 11 }}>dont</span>
-                  <span>+{result.totalPayout.toLocaleString()} récupérés</span>
-                  <span style={{ opacity: 0.5, fontSize: 10 }}>/ {result.totalBet} misés</span>
+                  <span style={{ opacity: 0.7, fontWeight: 400, fontSize: 11 }}>Payé :</span>
+                  <span>+{result.totalPayout.toLocaleString()} jetons</span>
+                  <span style={{ opacity: 0.5, fontSize: 10 }}>— Mise : {result.totalBet}</span>
                 </div>
               )}
 
               {/* Balance */}
               <div style={{ fontSize: 11, opacity: 0.6, marginTop: 4 }}>
-                Solde : {result.balance.toLocaleString()}
+                Caisse : {result.balance.toLocaleString()} jetons
               </div>
             </div>
           )}
@@ -822,7 +822,7 @@ export default function RouletteTable() {
                 transition: 'opacity 0.15s',
               }}
             >
-              EFFACER
+              ANNULER
             </button>
 
             <button
@@ -849,7 +849,7 @@ export default function RouletteTable() {
 
       {/* Balance strip */}
       <div className="fixed bottom-4 right-4 bg-casino-card border border-gold/30 rounded-xl px-4 py-2 shadow-xl">
-        <span className="text-gold text-sm font-bold">💰 {balance?.toLocaleString()} chips</span>
+        <span className="text-gold text-sm font-bold">💰 {balance?.toLocaleString()} jetons</span>
       </div>
     </div>
   );
