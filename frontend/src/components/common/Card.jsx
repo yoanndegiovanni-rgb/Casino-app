@@ -40,17 +40,17 @@ export default function Card({ rank, suit, faceDown = false, animate = false, cl
             <>
               {/* Top-left corner */}
               <div className={`absolute top-1 left-1 flex flex-col items-center leading-none ${isRed ? 'text-red-600' : 'text-gray-900'}`}>
-                <span className="text-[11px] font-bold leading-tight">{rank}</span>
-                <span className="text-[9px] leading-tight">{sym}</span>
+                <span className="text-[11px] font-bold leading-tight" translate="no">{rank}</span>
+                <span className="text-[9px] leading-tight" translate="no">{sym}</span>
               </div>
               {/* Center suit */}
-              <div className={`absolute inset-0 flex items-center justify-center text-3xl ${isRed ? 'text-red-500' : 'text-gray-800'}`}>
+              <div className={`absolute inset-0 flex items-center justify-center text-3xl ${isRed ? 'text-red-500' : 'text-gray-800'}`} translate="no">
                 {sym}
               </div>
               {/* Bottom-right corner (rotated) */}
               <div className={`absolute bottom-1 right-1 flex flex-col items-center leading-none rotate-180 ${isRed ? 'text-red-600' : 'text-gray-900'}`}>
-                <span className="text-[11px] font-bold leading-tight">{rank}</span>
-                <span className="text-[9px] leading-tight">{sym}</span>
+                <span className="text-[11px] font-bold leading-tight" translate="no">{rank}</span>
+                <span className="text-[9px] leading-tight" translate="no">{sym}</span>
               </div>
             </>
           )}
