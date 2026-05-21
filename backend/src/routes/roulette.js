@@ -41,12 +41,15 @@ router.post('/spin', authenticate, (req, res) => {
     balance_after: newBalance,
   });
 
+  const straightWon = betResults.some(b => b.type === 'straight' && b.won);
+
   db.game_stats.increment(req.userId, {
-    roulette_spins:   1,
-    roulette_wins:    net > 0  ? 1 : 0,
-    roulette_losses:  net < 0  ? 1 : 0,
-    total_wagered:    totalBet,
-    total_won:        totalPayout,
+    roulette_spins:        1,
+    roulette_wins:         net > 0     ? 1 : 0,
+    roulette_losses:       net < 0     ? 1 : 0,
+    roulette_straight_wins: straightWon ? 1 : 0,
+    total_wagered:         totalBet,
+    total_won:             totalPayout,
   });
 
   updateDailyStreak(req.userId, db);

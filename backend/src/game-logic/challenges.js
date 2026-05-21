@@ -32,6 +32,22 @@ const CHALLENGE_TRACKS = [
     ],
   },
   {
+    id: 'roulette_spins', title: 'Rouletteur', icon: '🎡', stat: 'roulette_spins',
+    stages: [
+      { id: 'roul_spins_10',  title: 'Premier tour',    desc: 'Jouer 10 tours de roulette',  target: 10,  reward: 300,  tier: 'easy'   },
+      { id: 'roul_spins_50',  title: 'Habitué du tapis', desc: 'Jouer 50 tours de roulette',  target: 50,  reward: 1200, tier: 'medium' },
+      { id: 'roul_spins_200', title: 'Maître de la roue',desc: 'Jouer 200 tours de roulette', target: 200, reward: 5000, tier: 'hard'   },
+    ],
+  },
+  {
+    id: 'roulette_plein', title: 'Plein Gagnant', icon: '🎯', stat: 'roulette_straight_wins',
+    stages: [
+      { id: 'roul_plein_1',  title: 'Coup de maître', desc: 'Gagner 1 mise en plein (35:1)',  target: 1,  reward: 1000, tier: 'easy'   },
+      { id: 'roul_plein_5',  title: 'Sniper',          desc: 'Gagner 5 mises en plein (35:1)', target: 5,  reward: 4000, tier: 'hard'   },
+      { id: 'roul_plein_15', title: 'Légende du tapis', desc: 'Gagner 15 mises en plein (35:1)',target: 15, reward: 12000,tier: 'hard'   },
+    ],
+  },
+  {
     id: 'splits', title: 'Séparateur', icon: '✂️', stat: 'splits_count',
     stages: [
       { id: 'splits_10',  title: 'Première séparation', desc: 'Effectuer 10 splits',  target: 10,  reward: 400,  tier: 'easy'   },
@@ -84,8 +100,10 @@ function getProgress(user, stats) {
     blackjack_wins:     stats.blackjack_wins     || 0,
     blackjacks_count:   stats.blackjacks_count   || 0,
     wheel_spins:        stats.wheel_spins        || 0,
-    splits_count:       stats.splits_count       || 0,
-    five_card_21_count: stats.five_card_21_count || 0,
+    roulette_spins:         stats.roulette_spins         || 0,
+    roulette_straight_wins: stats.roulette_straight_wins || 0,
+    splits_count:           stats.splits_count           || 0,
+    five_card_21_count:     stats.five_card_21_count     || 0,
     daily_streak:       user.daily_streak        || 0,
   };
 }
