@@ -127,6 +127,16 @@ function betKey(b) {
   return b.type;
 }
 
+function betLabel(b) {
+  if (b.type === 'straight') return `Plein ${b.number}`;
+  if (b.type === 'split')    return `Cheval ${b.numbers.join('-')}`;
+  if (b.type === 'corner')   return `Carré ${b.numbers.join('-')}`;
+  if (b.type === 'dozen')    return `${b.which === 1 ? '1ère' : b.which === 2 ? '2ème' : '3ème'} douzaine`;
+  if (b.type === 'column')   return `Colonne ${b.which}`;
+  const labels = { red: 'Rouge', black: 'Noir', odd: 'Impair', even: 'Pair', low: 'Manque 1–18', high: 'Passe 19–36' };
+  return labels[b.type] || b.type;
+}
+
 // ─── SVG Roulette Wheel ───────────────────────────────────────────────────────
 
 function Wheel({ rotation, spinning, result }) {
@@ -611,6 +621,10 @@ export default function RouletteTable() {
     });
   }
 
+  function removeBet(k) {
+    setBets(prev => prev.filter(b => betKey(b) !== k));
+  }
+
   async function handleSpin() {
     if (bets.length === 0 || spinning) return;
     const total = bets.reduce((s, b) => s + b.amount, 0);
@@ -742,6 +756,52 @@ export default function RouletteTable() {
           <ChipSelector selected={selectedChip} onSelect={setSelectedChip} />
 
           <BettingBoard bets={bets} onBet={addBet} spinning={spinning} result={result} />
+
+          {/* Bet list with individual remove buttons */}
+          {bets.length > 0 && (
+            <div style={{
+              width: '100%', maxHeight: 160, overflowY: 'auto',
+              background: 'rgba(0,0,0,0.35)',
+              border: '1px solid rgba(197,160,40,0.3)',
+              borderRadius: 8, padding: '6px 8px',
+              display: 'flex', flexDirection: 'column', gap: 4,
+            }}>
+              {bets.map(b => {
+                const k = betKey(b);
+                return (
+                  <div key={k} style={{
+                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                    background: 'rgba(255,255,255,0.04)',
+                    borderRadius: 5, padding: '4px 8px', gap: 8,
+                  }}>
+                    <span style={{ color: '#d1c8a8', fontSize: 12, flex: 1 }}>{betLabel(b)}</span>
+                    <span style={{ color: '#f0d060', fontWeight: 700, fontSize: 12, minWidth: 40, textAlign: 'right' }}>
+                      {b.amount} <span style={{ opacity: 0.6, fontWeight: 400 }}>chips</span>
+                    </span>
+                    <button
+                      onClick={() => removeBet(k)}
+                      disabled={spinning}
+                      title="Supprimer cette mise"
+                      style={{
+                        background: 'rgba(220,50,50,0.2)',
+                        border: '1px solid rgba(220,50,50,0.4)',
+                        color: '#f87171',
+                        borderRadius: 4, width: 22, height: 22,
+                        cursor: spinning ? 'not-allowed' : 'pointer',
+                        fontSize: 13, fontWeight: 900,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        flexShrink: 0, padding: 0,
+                        opacity: spinning ? 0.4 : 1,
+                        transition: 'background 0.1s',
+                      }}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          )}
 
           {/* Action buttons */}
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
