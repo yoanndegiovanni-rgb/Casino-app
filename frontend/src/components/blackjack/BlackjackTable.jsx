@@ -200,7 +200,7 @@ export default function BlackjackTable() {
       {/* Header */}
       <div className="text-center">
         <h2 className="text-gold-glow text-3xl font-extrabold tracking-widest">BLACKJACK</h2>
-        <p className="text-gray-400 text-sm mt-1">Dealer hits soft 17 · Blackjack pays 3:2</p>
+        <p className="text-gray-400 text-sm mt-1">Le croupier s'arrête sur tous les 17 · Blackjack paie 3:2</p>
       </div>
 
       {error && (

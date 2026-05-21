@@ -79,9 +79,19 @@ body::before {
 
 /* ── Felt texture ──────────────────────────────────────────────────────────── */
 .felt-bg {
-  background-color: #1a4a2a;
+  background-color: #0e3318;
   background-image:
-    radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.03) 0%, transparent 70%);
+    /* Grain */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence baseFrequency='0.78' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)' opacity='0.07'/%3E%3C/svg%3E"),
+    /* Feutre — mailles fines */
+    url("data:image/svg+xml,%3Csvg width='4' height='4' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='1' height='1' x='0' y='0' fill='%2300ff66' fill-opacity='0.025'/%3E%3Crect width='1' height='1' x='2' y='2' fill='%2300ff66' fill-opacity='0.025'/%3E%3C/svg%3E"),
+    /* Spotlight central — lustre au-dessus du tapis */
+    radial-gradient(ellipse 75% 55% at 50% 20%, rgba(40, 140, 65, 0.55) 0%, transparent 70%),
+    /* Reflet chaud sur les bords du tapis */
+    radial-gradient(ellipse 110% 15% at 50% 0%,   rgba(212,175,55,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 110% 15% at 50% 100%, rgba(212,175,55,0.05) 0%, transparent 60%),
+    /* Vignette — bords sombres */
+    radial-gradient(ellipse 120% 120% at 50% 50%, transparent 30%, rgba(0,0,0,0.75) 100%);
 }
 
 /* ── Gold text glow ────────────────────────────────────────────────────────── */
