@@ -108,6 +108,14 @@ function placeBet(userId, bets, balance) {
     if (isBlackjack(hand.cards)) hand.status = 'blackjack';
   }
 
+  // Offer insurance if dealer's face-up card is an Ace
+  if (game.dealerCards[0].rank === 'A') {
+    game.insuranceOffered = true;
+    game.currentHandIndex = game.hands.findIndex(h => h.status === 'active');
+    if (game.currentHandIndex === -1) game.currentHandIndex = 0;
+    return game;
+  }
+
   // If every hand is already resolved (all blackjack), go straight to dealer
   if (game.hands.every(h => h.status !== 'active')) {
     return resolveDealer(game);
@@ -118,8 +126,43 @@ function placeBet(userId, bets, balance) {
   return game;
 }
 
-function hit(userId) {
+function insurance(userId, amount) {
   const game = requireActiveGame(userId);
+  if (!game.insuranceOffered) throw new Error('No insurance offered');
+
+  const totalBet   = game.hands.reduce((s, h) => s + h.bet, 0);
+  const maxIns     = Math.floor(totalBet / 2);
+
+  if (!Number.isFinite(amount) || amount < 0 || amount > maxIns)
+    throw new Error(`Mise d'assurance entre 0 et ${maxIns}`);
+  if (amount > game.balance)
+    throw new Error('Solde insuffisant');
+
+  game.insuranceOffered = false;
+  game.balance -= amount;
+
+  // Peek at hole card
+  const holeCard       = { ...game.dealerCards[1], faceDown: false };
+  const dealerForPeek  = [game.dealerCards[0], holeCard];
+  const dealerHasBJ    = isBlackjack(dealerForPeek);
+
+  if (dealerHasBJ) {
+    // Insurance pays 2:1 → return stake + 2× profit
+    game.balance += amount * 3;
+    return resolveDealer(game);
+  }
+
+  // No dealer BJ: insurance lost, continue normally
+  game.insuranceLost = amount > 0 ? amount : null;
+
+  if (game.hands.every(h => h.status !== 'active')) {
+    return resolveDealer(game);
+  }
+  return game;
+}
+
+function hit(userId) {
+  const game = requireActiveGame(userId, {});
   const hand = currentHand(game);
 
   // Split aces only get one card (already handled in split(), but guard here)
@@ -211,10 +254,12 @@ function surrender(userId) {
 
 // ─── Internal helpers ────────────────────────────────────────────────────────
 
-function requireActiveGame(userId) {
+function requireActiveGame(userId, { allowInsurance = false } = {}) {
   const game = activeGames.get(userId);
   if (!game || game.status !== 'playing')
     throw new Error('No active game in progress');
+  if (!allowInsurance && game.insuranceOffered)
+    throw new Error('En attente de la décision d\'assurance');
   return game;
 }
 
@@ -289,7 +334,7 @@ function getGame(userId) { return activeGames.get(userId) || null; }
 function endGame(userId) { activeGames.delete(userId); }
 
 module.exports = {
-  placeBet, hit, stand, doubleDown, split, surrender,
+  placeBet, hit, stand, doubleDown, split, surrender, insurance,
   getGame, endGame,
   handValue, canSplit, canDouble, canSurrender,
 };

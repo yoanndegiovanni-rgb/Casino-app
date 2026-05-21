@@ -36,6 +36,7 @@ export const api = {
     split:     ()          => post('/blackjack/split',     {}),
     surrender: ()          => post('/blackjack/surrender', {}),
     newGame:   ()          => post('/blackjack/new-game',  {}),
+    insurance: (amount)    => post('/blackjack/insurance', { amount }),
   },
   poker: {
     state:    ()                        => get('/poker/state'),
