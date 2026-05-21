@@ -40,10 +40,9 @@ function isBlackjack(cards) {
   return cards.length === 2 && handValue(cards) === 21;
 }
 
-// Dealer hits on soft 17
+// Dealer stands on all 17s (S17)
 function dealerShouldHit(cards) {
-  const v = handValue(cards);
-  return v < 17 || (v === 17 && isSoft(cards));
+  return handValue(cards) < 17;
 }
 
 function canSplit(hand, balance) {
