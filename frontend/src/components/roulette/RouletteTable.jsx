@@ -533,52 +533,45 @@ function BettingBoard({ bets, onBet, spinning, result }) {
 
 // ─── Chip selector ────────────────────────────────────────────────────────────
 
-function ChipSelector({ selected, onSelect, vertical = false }) {
+function ChipSelector({ selected, onSelect }) {
+  const col1 = CHIP_DEFS.filter(c => c.value <= 10);
+  const col2 = CHIP_DEFS.filter(c => c.value >= 25);
+
+  function ChipBtn({ value, bg, ring }) {
+    return (
+      <button
+        onClick={() => onSelect(value)}
+        style={{
+          width: 38, height: 38, borderRadius: '50%',
+          background: bg,
+          border: `2px solid ${selected === value ? ring : 'rgba(255,255,255,0.2)'}`,
+          outline: selected === value ? `2px solid ${ring}` : 'none',
+          outlineOffset: 2,
+          color: '#fff', fontWeight: 900,
+          fontSize: value >= 100 ? 8 : 10,
+          cursor: 'pointer',
+          transition: 'transform 0.1s, outline 0.1s',
+          transform: selected === value ? 'scale(1.15)' : 'scale(1)',
+          boxShadow: selected === value ? `0 0 12px ${ring}66` : '0 2px 6px rgba(0,0,0,0.5)',
+          position: 'relative', flexShrink: 0,
+        }}
+      >
+        {value}
+        <span style={{ position:'absolute', inset:3, borderRadius:'50%', border:'1px solid rgba(255,255,255,0.15)', pointerEvents:'none' }} />
+      </button>
+    );
+  }
+
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: vertical ? 'column' : 'row',
-      gap: 6,
-      alignItems: 'center',
-      justifyContent: 'center',
-    }}>
-      <span style={{
-        color: 'rgba(200,180,120,0.7)', fontSize: 9, letterSpacing: '0.08em',
-        textTransform: 'uppercase', textAlign: 'center',
-        writingMode: vertical ? 'vertical-rl' : 'horizontal-tb',
-        transform: vertical ? 'rotate(180deg)' : 'none',
-        marginBottom: vertical ? 4 : 0, marginRight: vertical ? 0 : 4,
-      }}>
-        Mise
-      </span>
-      {CHIP_DEFS.map(({ value, bg, ring }) => (
-        <button
-          key={value}
-          onClick={() => onSelect(value)}
-          style={{
-            width: 38, height: 38,
-            borderRadius: '50%',
-            background: bg,
-            border: `2px solid ${selected === value ? ring : 'rgba(255,255,255,0.2)'}`,
-            outline: selected === value ? `2px solid ${ring}` : 'none',
-            outlineOffset: 2,
-            color: '#fff',
-            fontWeight: 900,
-            fontSize: value >= 100 ? 8 : 10,
-            cursor: 'pointer',
-            transition: 'transform 0.1s, outline 0.1s',
-            transform: selected === value ? 'scale(1.15)' : 'scale(1)',
-            boxShadow: selected === value ? `0 0 12px ${ring}66` : '0 2px 6px rgba(0,0,0,0.5)',
-            position: 'relative', flexShrink: 0,
-          }}
-        >
-          {value}
-          <span style={{
-            position: 'absolute', inset: 3, borderRadius: '50%',
-            border: '1px solid rgba(255,255,255,0.15)', pointerEvents: 'none',
-          }} />
-        </button>
-      ))}
+    <div style={{ display: 'flex', flexDirection: 'row', gap: 5, alignItems: 'center' }}>
+      {/* Colonne 1 : 1, 2, 5, 10 */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 5, alignItems: 'center' }}>
+        {col1.map(c => <ChipBtn key={c.value} {...c} />)}
+      </div>
+      {/* Colonne 2 : 25, 50, 100, 500 */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 5, alignItems: 'center' }}>
+        {col2.map(c => <ChipBtn key={c.value} {...c} />)}
+      </div>
     </div>
   );
 }
@@ -744,7 +737,7 @@ export default function RouletteTable() {
               border: '1px solid rgba(197,160,40,0.25)',
               padding: '10px 6px', gap: 6, alignSelf: 'stretch', justifyContent: 'center',
             }}>
-              <ChipSelector selected={selectedChip} onSelect={setSelectedChip} vertical />
+              <ChipSelector selected={selectedChip} onSelect={setSelectedChip} />
             </div>
 
             <BettingBoard bets={bets} onBet={addBet} spinning={spinning} result={result} />
