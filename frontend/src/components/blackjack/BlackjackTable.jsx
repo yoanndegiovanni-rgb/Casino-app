@@ -108,12 +108,7 @@ export default function BlackjackTable() {
     setError('');
     setLoading(true);
     try {
-      let { game: g } = await fn();
-      // Auto-decline insurance so the game never blocks
-      if (g?.insuranceOffered) {
-        const res = await api.blackjack.insurance(0);
-        g = res.game;
-      }
+      const { game: g } = await fn();
       setGame(g);
 
       if (g.status === 'complete') {

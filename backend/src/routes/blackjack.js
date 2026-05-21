@@ -84,17 +84,6 @@ function actionRoute(action) {
   };
 }
 
-router.post('/insurance', authenticate, (req, res) => {
-  try {
-    const amount = Number(req.body?.amount ?? 0);
-    const game   = bj.insurance(req.userId, amount);
-    if (game.status === 'complete') { saveResult(req.userId, game); bj.endGame(req.userId); }
-    res.json({ game });
-  } catch (e) {
-    res.status(400).json({ error: e.message });
-  }
-});
-
 router.post('/hit',       authenticate, actionRoute('hit'));
 router.post('/stand',     authenticate, actionRoute('stand'));
 router.post('/double',    authenticate, actionRoute('doubleDown'));
