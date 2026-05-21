@@ -196,21 +196,68 @@ export default function BlackjackTable() {
   const totalBet = game?.hands?.reduce((s, h) => s + h.bet, 0) ?? 0;
 
   return (
-    <div className="felt-bg min-h-[calc(100vh-64px)] flex flex-col items-center justify-start py-8 px-4 gap-6">
+    <div className="felt-bg min-h-[calc(100vh-64px)] flex flex-col items-center justify-start py-8 px-4 gap-6"
+      style={{ position: 'relative', overflow: 'hidden' }}>
+
+      {/* ── Décor latéral fondu ── */}
+      <div aria-hidden="true" style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0 }}>
+
+        {/* Symboles de couleurs — gauche */}
+        <span style={{ position:'absolute', left:'-2%',  top:'8%',  fontSize:220, opacity:0.032, color:'#fff', lineHeight:1, userSelect:'none', transform:'rotate(-12deg)' }}>♠</span>
+        <span style={{ position:'absolute', left:'3%',   top:'52%', fontSize:160, opacity:0.028, color:'#d4af37', lineHeight:1, userSelect:'none', transform:'rotate(8deg)' }}>♣</span>
+        <span style={{ position:'absolute', left:'-1%',  top:'78%', fontSize:100, opacity:0.022, color:'#fff', lineHeight:1, userSelect:'none', transform:'rotate(-5deg)' }}>♠</span>
+
+        {/* Symboles de couleurs — droite */}
+        <span style={{ position:'absolute', right:'-2%', top:'6%',  fontSize:200, opacity:0.032, color:'#c0392b', lineHeight:1, userSelect:'none', transform:'rotate(10deg)' }}>♥</span>
+        <span style={{ position:'absolute', right:'2%',  top:'48%', fontSize:170, opacity:0.028, color:'#c0392b', lineHeight:1, userSelect:'none', transform:'rotate(-8deg)' }}>♦</span>
+        <span style={{ position:'absolute', right:'-1%', top:'76%', fontSize:110, opacity:0.022, color:'#d4af37', lineHeight:1, userSelect:'none', transform:'rotate(6deg)' }}>♣</span>
+
+        {/* Lignes ornementales dorées — gauche */}
+        <svg style={{ position:'absolute', left:0, top:0, width:'18%', height:'100%', opacity:0.06 }} viewBox="0 0 120 800" preserveAspectRatio="none">
+          <line x1="110" y1="0" x2="110" y2="800" stroke="#d4af37" strokeWidth="0.5"/>
+          <line x1="105" y1="0" x2="105" y2="800" stroke="#d4af37" strokeWidth="0.2"/>
+          {[80,200,320,440,560,680].map(y => (
+            <g key={y}>
+              <circle cx="110" cy={y} r="4" fill="none" stroke="#d4af37" strokeWidth="0.5"/>
+              <line x1="90" y1={y} x2="125" y2={y} stroke="#d4af37" strokeWidth="0.3"/>
+            </g>
+          ))}
+        </svg>
+
+        {/* Lignes ornementales dorées — droite */}
+        <svg style={{ position:'absolute', right:0, top:0, width:'18%', height:'100%', opacity:0.06 }} viewBox="0 0 120 800" preserveAspectRatio="none">
+          <line x1="10" y1="0" x2="10" y2="800" stroke="#d4af37" strokeWidth="0.5"/>
+          <line x1="15" y1="0" x2="15" y2="800" stroke="#d4af37" strokeWidth="0.2"/>
+          {[80,200,320,440,560,680].map(y => (
+            <g key={y}>
+              <circle cx="10" cy={y} r="4" fill="none" stroke="#d4af37" strokeWidth="0.5"/>
+              <line x1="-5" y1={y} x2="30" y2={y} stroke="#d4af37" strokeWidth="0.3"/>
+            </g>
+          ))}
+        </svg>
+
+        {/* Losanges dorés dans les coins */}
+        {[['-14px','-14px'],['auto','-14px'],['-14px','auto'],['auto','auto']].map(([t,b,l,r],i) => (
+          <svg key={i} style={{ position:'absolute', top: i<2?'-14px':'auto', bottom:i>=2?'-14px':'auto', left:i%2===0?'-14px':'auto', right:i%2===1?'-14px':'auto', width:80, height:80, opacity:0.07 }} viewBox="0 0 80 80">
+            <rect x="15" y="15" width="50" height="50" fill="none" stroke="#d4af37" strokeWidth="1" transform="rotate(45 40 40)"/>
+            <rect x="22" y="22" width="36" height="36" fill="none" stroke="#d4af37" strokeWidth="0.5" transform="rotate(45 40 40)"/>
+          </svg>
+        ))}
+      </div>
       {/* Header */}
-      <div className="text-center">
+      <div className="text-center" style={{ position:'relative', zIndex:1 }}>
         <h2 className="text-gold-glow text-3xl font-extrabold tracking-widest">BLACKJACK</h2>
         <p className="text-gray-400 text-sm mt-1">Le croupier s'arrête sur tous les 17 · Blackjack paie 3:2</p>
       </div>
 
       {error && (
-        <div className="bg-red-900/70 border border-red-500 text-red-200 px-4 py-2 rounded-lg text-sm">
+        <div className="bg-red-900/70 border border-red-500 text-red-200 px-4 py-2 rounded-lg text-sm" style={{ position:'relative', zIndex:1 }}>
           {error}
         </div>
       )}
 
       {game ? (
-        <div className="relative flex flex-col items-center gap-6 w-full max-w-2xl">
+        <div className="relative flex flex-col items-center gap-6 w-full max-w-2xl" style={{ zIndex:1 }}>
           {/* ── Dealer area ── */}
           <div className="text-center">
             <p className="text-gray-400 text-sm mb-3 uppercase tracking-widest font-semibold">
@@ -327,7 +374,9 @@ export default function BlackjackTable() {
           )}
         </div>
       ) : (
-        <BetControls balance={balance} onBet={handleBet} disabled={loading} />
+        <div style={{ position:'relative', zIndex:1 }}>
+          <BetControls balance={balance} onBet={handleBet} disabled={loading} />
+        </div>
       )}
 
       {/* Balance strip */}
