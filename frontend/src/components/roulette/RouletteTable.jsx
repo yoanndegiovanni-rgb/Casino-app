@@ -406,7 +406,7 @@ function BettingBoard({ bets, onBet, spinning, result }) {
   const MR = 36 + G;      // = 38
 
   return (
-    <div style={{ background: '#3d2007', padding: 6, borderRadius: 12, boxShadow: '0 8px 32px rgba(0,0,0,0.8)' }}>
+    <div translate="no" style={{ background: '#3d2007', padding: 6, borderRadius: 12, boxShadow: '0 8px 32px rgba(0,0,0,0.8)' }}>
       <div style={{ background: '#0a4a1e', borderRadius: 8, border: '1px solid rgba(197,160,40,0.6)', padding: 8, boxShadow: 'inset 0 0 40px rgba(0,0,0,0.5)' }}>
 
         {/* Helper legend */}
@@ -683,66 +683,40 @@ export default function RouletteTable() {
         </p>
       </div>
 
-      {/* Two-column layout on large screens */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 32, justifyContent: 'center', alignItems: 'flex-start', width: '100%', maxWidth: 960 }}>
+      {/* ── Wheel + history + result (centré) ── */}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
 
-        {/* ── Left: Wheel + history + result ── */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, flexShrink: 0 }}>
+        <Wheel rotation={wheelRotation} spinning={spinning} result={result} />
 
-          <Wheel rotation={wheelRotation} spinning={spinning} result={result} />
+        {history.length > 0 && (
+          <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', justifyContent: 'center', maxWidth: W }}>
+            {history.map((n, i) => <HistoryPill key={i} n={n} />)}
+          </div>
+        )}
 
-          {/* Number history */}
-          {history.length > 0 && (
-            <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', justifyContent: 'center', maxWidth: W }}>
-              {history.map((n, i) => <HistoryPill key={i} n={n} />)}
-            </div>
-          )}
-
-          {/* Win / loss banner */}
-          {result && (
-            <div style={{
-              textAlign: 'center',
-              padding: '12px 22px',
-              borderRadius: 12,
-              border: `1px solid ${result.net >= 0 ? '#16a34a' : '#991b1b'}`,
-              background: result.net >= 0 ? 'rgba(22,163,74,0.15)' : 'rgba(153,27,27,0.15)',
-              color: result.net >= 0 ? '#4ade80' : '#f87171',
-              animation: 'fadeIn 0.3s ease-out forwards',
-              minWidth: 200,
-            }}>
-              {/* Net result */}
-              <div style={{ fontWeight: 900, fontSize: 24 }}>
-                {result.net >= 0 ? '+' : ''}{result.net} jetons
+        {result && (
+          <div style={{
+            textAlign: 'center', padding: '12px 22px', borderRadius: 12,
+            border: `1px solid ${result.net >= 0 ? '#16a34a' : '#991b1b'}`,
+            background: result.net >= 0 ? 'rgba(22,163,74,0.15)' : 'rgba(153,27,27,0.15)',
+            color: result.net >= 0 ? '#4ade80' : '#f87171',
+            animation: 'fadeIn 0.3s ease-out forwards', minWidth: 200,
+          }}>
+            <div style={{ fontWeight: 900, fontSize: 24 }}>{result.net >= 0 ? '+' : ''}{result.net} jetons</div>
+            {result.totalPayout > 0 && (
+              <div style={{ marginTop: 5, fontSize: 13, fontWeight: 700, color: '#f0d060', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+                <span style={{ opacity: 0.7, fontWeight: 400, fontSize: 11 }}>Payé :</span>
+                <span>+{result.totalPayout.toLocaleString()} jetons</span>
+                <span style={{ opacity: 0.5, fontSize: 10 }}>— Mise : {result.totalBet}</span>
               </div>
+            )}
+            <div style={{ fontSize: 11, opacity: 0.6, marginTop: 4 }}>Caisse : {result.balance.toLocaleString()} jetons</div>
+          </div>
+        )}
+      </div>
 
-              {/* Payout detail */}
-              {result.totalPayout > 0 && (
-                <div style={{
-                  marginTop: 5,
-                  fontSize: 13,
-                  fontWeight: 700,
-                  color: '#f0d060',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 8,
-                }}>
-                  <span style={{ opacity: 0.7, fontWeight: 400, fontSize: 11 }}>Payé :</span>
-                  <span>+{result.totalPayout.toLocaleString()} jetons</span>
-                  <span style={{ opacity: 0.5, fontSize: 10 }}>— Mise : {result.totalBet}</span>
-                </div>
-              )}
-
-              {/* Balance */}
-              <div style={{ fontSize: 11, opacity: 0.6, marginTop: 4 }}>
-                Caisse : {result.balance.toLocaleString()} jetons
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* ── Right: Chip selector + table + controls ── */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, minWidth: 0 }}>
+      {/* ── Chip selector + table + controls (centré) ── */}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, width: '100%' }}>
 
           {error && (
             <div style={{
@@ -845,7 +819,6 @@ export default function RouletteTable() {
             </button>
           </div>
         </div>
-      </div>
 
       {/* Balance strip */}
       <div className="fixed bottom-4 right-4 bg-casino-card border border-gold/30 rounded-xl px-4 py-2 shadow-xl">
