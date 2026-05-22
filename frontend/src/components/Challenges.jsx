@@ -98,6 +98,8 @@ function TrackSection({ track, claiming, onClaim }) {
 }
 
 function StageRow({ stage, claiming, onClaim }) {
+  const [expanded, setExpanded] = useState(false);
+
   if (stage.claimed) {
     return (
       <div className="flex items-center gap-2 px-2 py-1 rounded opacity-50">
@@ -110,44 +112,101 @@ function StageRow({ stage, claiming, onClaim }) {
 
   if (stage.locked) {
     return (
-      <div className="flex items-center gap-2 px-2 py-1 rounded opacity-40">
-        <span className="text-gray-600 text-[10px]">🔒</span>
-        <span className="text-gray-500 text-[10px] flex-1 truncate">{stage.title}</span>
-        <span className="text-gray-600 text-[9px]">+{stage.reward.toLocaleString()}</span>
-      </div>
+      <button
+        onClick={() => setExpanded(o => !o)}
+        className="w-full text-left"
+        style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+      >
+        <div className="flex items-center gap-2 px-2 py-1 rounded opacity-40 hover:opacity-60 transition-opacity">
+          <span className="text-gray-600 text-[10px]">🔒</span>
+          <span className="text-gray-500 text-[10px] flex-1 truncate">{stage.title}</span>
+          <span className="text-gray-600 text-[9px]">+{stage.reward.toLocaleString()}</span>
+        </div>
+        {expanded && stage.desc && (
+          <div className="mx-2 mb-1 px-2 py-1.5 rounded bg-gray-800/60 border border-gray-700/50">
+            <p className="text-gray-400 text-[9px] leading-relaxed">{stage.desc}</p>
+            <p className="text-gray-600 text-[9px] mt-0.5 italic">Débloque l'étape précédente d'abord.</p>
+          </div>
+        )}
+      </button>
     );
   }
 
   const pct = Math.min((stage.current / stage.target) * 100, 100);
 
   return (
-    <div className="bg-felt-light/20 rounded-lg px-2 py-1.5 flex flex-col gap-1">
-      <div className="flex items-center gap-1.5">
-        <span className={`text-[8px] font-bold px-1 py-0.5 rounded border ${TIER_BADGE[stage.tier]}`}>
-          {TIER_LABEL[stage.tier]}
-        </span>
-        <span className="text-white text-[10px] font-semibold flex-1 truncate">{stage.title}</span>
-        <span className="text-gold text-[10px] font-bold shrink-0">+{stage.reward.toLocaleString()}</span>
-      </div>
-      <div className="flex items-center gap-1.5">
-        <div className="flex-1 h-1 bg-gray-700 rounded-full overflow-hidden">
-          <div
-            className={`h-full ${TIER_BAR[stage.tier] || 'bg-gold'} rounded-full transition-all duration-500`}
-            style={{ width: `${pct}%` }}
-          />
+    <div className="bg-felt-light/20 rounded-lg overflow-hidden">
+      {/* Clickable header */}
+      <button
+        onClick={() => setExpanded(o => !o)}
+        className="w-full text-left px-2 py-1.5 flex flex-col gap-1 hover:bg-white/5 transition-colors"
+        style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+      >
+        <div className="flex items-center gap-1.5">
+          <span className={`text-[8px] font-bold px-1 py-0.5 rounded border ${TIER_BADGE[stage.tier]}`}>
+            {TIER_LABEL[stage.tier]}
+          </span>
+          <span className="text-white text-[10px] font-semibold flex-1 truncate">{stage.title}</span>
+          <span className="text-gold text-[10px] font-bold shrink-0">+{stage.reward.toLocaleString()}</span>
+          <span className="text-gray-500 text-[9px] shrink-0">{expanded ? '▲' : '▼'}</span>
         </div>
-        <span className="text-gray-400 text-[9px] tabular-nums shrink-0">
-          {stage.current.toLocaleString()}/{stage.target.toLocaleString()}
-        </span>
-      </div>
-      {stage.completed && (
-        <button
-          onClick={() => onClaim(stage.id)}
-          disabled={!!claiming}
-          className="btn-gold w-full py-0.5 rounded text-[10px] font-extrabold disabled:opacity-50 mt-0.5"
-        >
-          {claiming === stage.id ? 'Claiming…' : `CLAIM +${stage.reward.toLocaleString()}`}
-        </button>
+        <div className="flex items-center gap-1.5">
+          <div className="flex-1 h-1 bg-gray-700 rounded-full overflow-hidden">
+            <div
+              className={`h-full ${TIER_BAR[stage.tier] || 'bg-gold'} rounded-full transition-all duration-500`}
+              style={{ width: `${pct}%` }}
+            />
+          </div>
+          <span className="text-gray-400 text-[9px] tabular-nums shrink-0">
+            {stage.current.toLocaleString()}/{stage.target.toLocaleString()}
+          </span>
+        </div>
+      </button>
+
+      {/* Detail panel */}
+      {expanded && (
+        <div className="px-2 pb-2 pt-0.5 border-t border-white/10 flex flex-col gap-1.5">
+          {stage.desc && (
+            <p className="text-gray-300 text-[10px] leading-relaxed">{stage.desc}</p>
+          )}
+          <div className="flex justify-between items-center">
+            <span className="text-gray-500 text-[9px]">Progression</span>
+            <span className="text-gray-300 text-[9px] font-bold tabular-nums">
+              {stage.current.toLocaleString()} / {stage.target.toLocaleString()}
+            </span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-gray-500 text-[9px]">Récompense</span>
+            <span className="text-gold text-[9px] font-bold">+{stage.reward.toLocaleString()} jetons</span>
+          </div>
+          {stage.completed && (
+            <button
+              onClick={() => onClaim(stage.id)}
+              disabled={!!claiming}
+              className="btn-gold w-full py-0.5 rounded text-[10px] font-extrabold disabled:opacity-50 mt-0.5"
+            >
+              {claiming === stage.id ? 'Réclamation…' : `RÉCLAMER +${stage.reward.toLocaleString()}`}
+            </button>
+          )}
+          {!stage.completed && (
+            <div className="text-center text-[9px] text-gray-500 mt-0.5">
+              Encore {(stage.target - stage.current).toLocaleString()} pour compléter
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Claim button outside detail (when not expanded) */}
+      {!expanded && stage.completed && (
+        <div className="px-2 pb-1.5">
+          <button
+            onClick={() => onClaim(stage.id)}
+            disabled={!!claiming}
+            className="btn-gold w-full py-0.5 rounded text-[10px] font-extrabold disabled:opacity-50"
+          >
+            {claiming === stage.id ? 'Réclamation…' : `RÉCLAMER +${stage.reward.toLocaleString()}`}
+          </button>
+        </div>
       )}
     </div>
   );
