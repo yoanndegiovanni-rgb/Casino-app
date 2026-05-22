@@ -64,17 +64,19 @@ const users = {
   },
   getTop10() {
     return [...data.users]
-      .sort((a, b) => b.balance - a.balance)
-      .slice(0, 10)
       .map(u => {
         const s = game_stats.findByUserId(u.id) || {};
         return {
           id: u.id,
           username: u.username,
           balance: u.balance,
-          blackjack_wins: s.blackjack_wins || 0,
-          poker_wins:     s.poker_wins     || 0,
-          total_wagered:  s.total_wagered  || 0,
+          blackjack_wins:  s.blackjack_wins  || 0,
+          blackjacks_count: s.blackjacks_count || 0,
+          poker_wins:      s.poker_wins      || 0,
+          roulette_wins:   s.roulette_wins   || 0,
+          roulette_spins:  s.roulette_spins  || 0,
+          roulette_straight_wins: s.roulette_straight_wins || 0,
+          total_wagered:   s.total_wagered   || 0,
         };
       });
   },
