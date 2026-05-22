@@ -51,8 +51,8 @@ export default function Leaderboard() {
                       {row.username === user?.username && ' (you)'}
                     </span>
                   </td>
-                  <td className="py-3 px-4 text-right font-bold text-gold">
-                    {row.balance?.toLocaleString()}
+                  <td className="py-3 px-4 text-right font-bold text-gold whitespace-nowrap">
+                    {row.balance?.toLocaleString()} 💰
                   </td>
                   <td className="py-3 px-4 text-right text-gray-400 hidden sm:table-cell">
                     {row.blackjack_wins}
